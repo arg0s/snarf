@@ -10,11 +10,18 @@ gpwd = os.environ.get('GPWD', None)
 
 def fetch_funnel(url):
 	r = requests.get(url)
+#	import pdb; pdb.set_trace()
 	return r.json if r.status_code is 200 else {}	
 
 def fetch_worksheet():
 	gc = gspread.login(guser, gpwd)
-	wks = gc.open('Droidcon 2012 - Program Committee Planner').sheet1
+	wks = gc.open('Droidcon 2012 - Program Committee Planner').worksheets()[0]
+	return wks
+
+def fetch_schedule():
+	gc = gspread.login(guser, gpwd)
+	wks = gc.open('Droidcon 2012 - Program Committee Planner').worksheets()[1]
+	print wks.get_all_values()
 	return wks
 
 def fetch_ratings():
@@ -30,6 +37,7 @@ def update_proposal(sheet, proposal):
 	#
 	try:
 		# Lookup entry
+		#import pdb; pdb.set_trace()
 		cell = sheet.find(str(proposal.get(u'id')))
 		# Update cells - real kludgy wudgy since gsheet doesnt seem to have a row update api
 		row, col = cell.row, cell.col
@@ -53,9 +61,11 @@ def bootstrap():
 	feed = fetch_funnel(url)
 	proposals = feed.get('proposals', None)
 	sheet = fetch_worksheet()
+	#import pdb; pdb.set_trace()
 	if proposals:
 		[update_proposal(sheet, proposal) for proposal in proposals]
 	else:
 		print '>> Unable to fetch proposals'
 
 bootstrap()
+#print fetch_schedule()
