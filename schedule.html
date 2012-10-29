@@ -1,0 +1,25 @@
+
+<div class='schedule_table'>
+{% for row in rows %}
+
+<div class='schedule_row'>
+{% for item in row %}
+
+<span class='schedule_item'> 
+	{% if item.url  %}
+	<div class='schedule_item_detail' style="display:inline">
+		<a href='{{item.url}}'>{{ item.title }}</a>
+		{{ item.speaker }}
+	</div>
+	{% else %}
+	<div class='schedule_item_placeholder' style="display:inline">
+		{{ item }}
+	</div>
+	{% endif %}
+</span>
+
+{% endfor %}
+</div>
+{% endfor %}
+</div>
+
